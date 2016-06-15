@@ -13,9 +13,11 @@ public class SphereDestroyedSoundController : MonoBehaviour {
     
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
         audio = GetComponent<AudioSource>();
+    }
 
+    void OnEnable() {
         audio.pitch = Random.Range(lowPitchRange, highPitchRange);
         audio.PlayOneShot(rockFallingSounds, volume);
         audio.PlayOneShot(explosionSound, volume + 0.2f);

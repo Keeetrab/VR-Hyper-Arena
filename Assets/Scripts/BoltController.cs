@@ -11,6 +11,7 @@ public class BoltController : MonoBehaviour {
     public float jumpFactor;
 
     public GameObject shatteredSphere;
+    private ObjectPoolScript objectPool;
 
     private GameController gameController;
 
@@ -18,6 +19,7 @@ public class BoltController : MonoBehaviour {
 		this.GetComponent<Rigidbody>().velocity = this.transform.up * starSpeed;
         //this.GetComponent<Rigidbody>().angularVelocity = this.transform.forward * rotationSpeed;
         gameController = FindObjectOfType<GameController>();
+        objectPool = gameController.GetComponent<ObjectPoolScript>();
   
     }
 	
@@ -35,15 +37,21 @@ public class BoltController : MonoBehaviour {
         foreach (Collider collider in colliders) {
             if (collider.GetComponent<Rigidbody>() != null) {
                 if (collider.CompareTag("Enemy")) {
-                    GameObject brokenSphere = (GameObject)Instantiate(shatteredSphere, collider.transform.position, collider.transform.rotation);
+                    GameObject brokenSphere = objectPool.GetPooledDestroyedSphere();
+                    DestroyedSphereController brokenSphereController = brokenSphere.GetComponent<DestroyedSphereController>();
+                    brokenSphereController.Activate(collider.transform.position, collider.transform.rotation);
+                    //GameObject brokenSphere = (GameObject)Instantiate(shatteredSphere, collider.transform.position, collider.transform.rotation);
                     DestroyObject(collider.gameObject);
 
                     Rigidbody[] brokenPieces = brokenSphere.GetComponentsInChildren<Rigidbody>();
                     foreach (Rigidbody piece in brokenPieces) {
                         piece.AddExplosionForce(force, position, radius, jumpFactor, ForceMode.Impulse);
-                        Destroy(piece.GetComponent<Collider>(), 9.0f);
+                       
+                        // Destroy(piece.GetComponent<Collider>(), 9.0f);
                     }
-                    Destroy(brokenSphere, 10.0f);
+
+                    brokenSphereController.Deactivate(5.0f);
+                    //Destroy(brokenSphere, 10.0f);
 
                 } else {
                     Rigidbody rb = collider.GetComponent<Rigidbody>();
@@ -53,4 +61,6 @@ public class BoltController : MonoBehaviour {
         }
     }
 	
+
+    
 }
