@@ -3,32 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class ObjectPoolScript : MonoBehaviour {
-    public GameObject pooledBolt;
-    public GameObject pooledDestroyedSphere;
+    public GameObject boltModel;
+    public GameObject destroyedSphereModel;
+    public GameObject sphereModel;
 
     public int pooledBoltsAmount = 10;
     public int pooledDestroyedSpheresAmount = 7;
+    public int pooledSpheresAmount = 5;
     public bool willGrow = true;
 
     public List<GameObject> pooledBolts;
     public List<GameObject> pooledDestroyedSpheres;
+    public List<GameObject> pooledSpheres;
 
     void Start() {
 
-        pooledBolts = new List<GameObject>();
-        for (int i = 0; i < pooledBoltsAmount; i++) {
-            GameObject obj = (GameObject)Instantiate(pooledBolt);
-            obj.SetActive(false);
-            pooledBolts.Add(obj);
-        }
-
-        pooledDestroyedSpheres = new List<GameObject>();
-        for (int i = 0; i < pooledDestroyedSpheresAmount; i++) {
-            GameObject obj = (GameObject)Instantiate(pooledDestroyedSphere);
-            obj.SetActive(false);
-            pooledDestroyedSpheres.Add(obj);
-        }
-
+        pooledBolts = CreatePool(boltModel, pooledBoltsAmount);
+        pooledDestroyedSpheres = CreatePool(destroyedSphereModel, pooledDestroyedSpheresAmount);
+        pooledSpheres = CreatePool(sphereModel, pooledSpheresAmount);
     }
 
     GameObject GetPooledObject(List<GameObject> pooledObjects, GameObject pooledObject) {
@@ -53,12 +45,26 @@ public class ObjectPoolScript : MonoBehaviour {
         return null;
     }
 
+    private List<GameObject> CreatePool (GameObject model, int amount) {
+        List<GameObject> list = new List<GameObject>();
+        for (int i = 0; i < amount; i++) {
+            GameObject obj = (GameObject)Instantiate(model);
+            obj.SetActive(false);
+            list.Add(obj);
+        }
+        return list;
+    }
+
+
     public GameObject GetPooledBolt() {
-        return GetPooledObject(pooledBolts, pooledBolt);
+        return GetPooledObject(pooledBolts, boltModel);
     }
 
     public GameObject GetPooledDestroyedSphere() {
-        return GetPooledObject(pooledDestroyedSpheres, pooledDestroyedSphere);
+        return GetPooledObject(pooledDestroyedSpheres, destroyedSphereModel);
     }
 
+    public GameObject GetPooledSphere() {
+        return GetPooledObject(pooledSpheres, sphereModel);
+    }
 }

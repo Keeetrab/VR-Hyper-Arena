@@ -19,12 +19,16 @@ public class EnemyController : MonoBehaviour {
 
     private float _nextBeep;
 
+    void OnAwake() {
+        if (rb = null) {
+            rb = this.GetComponent<Rigidbody>();
+        }
+    }
+
     // Use this for initialization.
-    void Start () {
+    void OnEnable () {
 		_state = EnemyState.Normal;
         _nextBeep = Time.time + beepInterval;
-
-        rb = this.GetComponent<Rigidbody>();
 
         float thisSpeed = Random.Range (speedMin, speedMax);
         if (GvrViewer.Instance.VRModeEnabled) {
@@ -33,9 +37,19 @@ public class EnemyController : MonoBehaviour {
 
         
         Vector3 dir = (-this.transform.position).normalized * thisSpeed;
-        rb.velocity = dir;
+        if (rb != null) {
+            rb.velocity = dir;
+        }
 
 	}
+
+    void OnDisable() {
+        if(rb == null) {
+            rb = this.GetComponent<Rigidbody>();
+        }
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+    }
 
     void Update() {
         if(Time.time > _nextBeep && _state == EnemyState.Normal) {

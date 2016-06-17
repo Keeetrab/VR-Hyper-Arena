@@ -5,48 +5,62 @@ public class BoltLauncher : MonoBehaviour {
 
 	public GameObject player;
 	public BoltController bolt;
-	public AudioSource whooshSound;
+    public float boltSpeed = 9.0f;
 
-	private GameController _gameController;
-	private Vector3 _shooterOffset;
-    private Vector3 _vrShooterOffset;
+	private AudioSource lazerSound;
+    private ObjectPoolScript objectPool;
+	private GameController gameController;
+	private Vector3 shooterOffset;
+    private Vector3 vrShooterOffset;
 
     void Start () {
-        _gameController = this.GetComponentInParent<GameController>();
-		_shooterOffset = new Vector3(0.0f, 0.8f, 1.0f);
-        _vrShooterOffset = new Vector3(0.0f, -0.4f, 1.0f);
+        gameController = this.GetComponentInParent<GameController>();
+        objectPool = gameController.GetComponent<ObjectPoolScript>();
+        lazerSound = GetComponent<AudioSource>();
+		shooterOffset = new Vector3(0.0f, 0.8f, 1.0f);
+        vrShooterOffset = new Vector3(0.0f, -0.4f, 1.0f);
 
     }
 	
 	void Update () {
-        if (GvrViewer.Instance.VRModeEnabled && GvrViewer.Instance.Triggered && !_gameController.isGameOver) {
+        if (GvrViewer.Instance.VRModeEnabled && GvrViewer.Instance.Triggered && !gameController.isGameOver) {
             GameObject vrLauncher =
                  GvrViewer.Instance.GetComponentInChildren<GvrHead>().gameObject;
            
-            LaunchNinjaStarFrom(vrLauncher, _vrShooterOffset);
+            LaunchFrom(vrLauncher, vrShooterOffset);
 
         } else if (!GvrViewer.Instance.VRModeEnabled && Input.GetButtonDown("Fire1") &&
-           !_gameController.isGameOver) {
+           !gameController.isGameOver) {
 			// First, turn the ninja so he's looking at the player's mouse / finger.
 			Vector3 mouseLoc = Input.mousePosition;
 			Vector3 worldMouseLoc = Camera.main.ScreenToWorldPoint(mouseLoc);
 			worldMouseLoc.y = player.transform.position.y;
 			player.transform.LookAt(worldMouseLoc);
-			LaunchNinjaStarFrom(player, _shooterOffset);
+			LaunchFrom(player, shooterOffset);
 		}	
 	}
 	
-	void LaunchNinjaStarFrom(GameObject origin, Vector3 shooterOffset) {
+	void LaunchFrom(GameObject origin, Vector3 shooterOffset) {
 		
-		// This will a ninja star slightly in front of our origin object.
-		// We also have to rotate our model 90 degrees in the x-coordinate.
-		Vector3 ninjaStarRotation = origin.transform.rotation.eulerAngles;
-		ninjaStarRotation.x = 90.0f;
+		Vector3 boltRotation = origin.transform.rotation.eulerAngles;
+		boltRotation.x = 90.0f;
+        boltRotation.z = 0f;
 		Vector3 transformedOffset = origin.transform.rotation * shooterOffset;
-		Instantiate(bolt, origin.transform.position + transformedOffset, Quaternion.Euler(ninjaStarRotation));
-		
-		// Play a sound effect!
-		whooshSound.Play();
+
+        //Object Pool
+
+        GameObject bolt = objectPool.GetPooledBolt();
+
+        
+        bolt.transform.position = new Vector3 (origin.transform.position.x + transformedOffset.x, 1.2f, origin.transform.position.z + transformedOffset.z);
+       
+        bolt.transform.rotation = Quaternion.Euler(boltRotation);
+        bolt.SetActive(true);
+        bolt.GetComponent<Rigidbody>().velocity = bolt.transform.up * boltSpeed;
+
+
+        // Play a sound effect
+        lazerSound.Play();
 		
 	}
 	

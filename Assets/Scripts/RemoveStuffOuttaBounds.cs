@@ -9,7 +9,7 @@ public class RemoveStuffOuttaBounds : MonoBehaviour {
 	void OnTriggerExit (Collider other) 
 	{
         if (other.CompareTag("Bolt")) {
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
         }
 	}
 }

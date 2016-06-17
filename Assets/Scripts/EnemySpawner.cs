@@ -15,11 +15,13 @@ public class EnemySpawner : MonoBehaviour {
 	
 	private float _nextLaunchTime;
 
-	private GameController _gameController;
+	private GameController gameController;
+    private ObjectPoolScript objectPool;
 
 	void Start () {
         gameStarted = false;
-		_gameController = this.GetComponent<GameController>();
+		gameController = this.GetComponent<GameController>();
+        objectPool = gameController.GetComponent<ObjectPoolScript>();
 	}
 
     public void StartWaves() {
@@ -36,11 +38,16 @@ public class EnemySpawner : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (gameStarted && Time.time > _nextLaunchTime && !_gameController.isGameOver) {
-            Vector3 launchPosition = RandomCirclePosition(spawnRadius);
+		if (gameStarted && Time.time > _nextLaunchTime && !gameController.isGameOver) {
 
+            Vector3 launchPosition = RandomCirclePosition(spawnRadius);
             Quaternion launchRotation = Quaternion.Euler(Vector3.zero);
-            Instantiate(enemyPrefab, launchPosition, launchRotation);
+
+            GameObject enemy = objectPool.GetPooledSphere();
+            enemy.transform.position = launchPosition;
+            enemy.transform.rotation = launchRotation;
+            enemy.SetActive(true);
+
 			SetNextLaunch();
 		}
 	}
