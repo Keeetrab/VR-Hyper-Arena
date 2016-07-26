@@ -109,11 +109,23 @@
     <Compile Include="Assets\Standard Assets\Effects\ImageEffects\Scripts\Vortex.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\AutoSave\ReadMe.txt" />
+    <None Include="Assets\BasicBeamShot\HowToUse_EN.txt" />
+    <None Include="Assets\BasicBeamShot\HowToUse_JP.txt" />
+    <None Include="Assets\BasicBeamShot\sh\AddColor_sh.shader" />
+    <None Include="Assets\BasicBeamShot\sh\Add_UVScroll_sh.shader" />
+    <None Include="Assets\BasicBeamShot\sh\BeamLine_sh.shader" />
+    <None Include="Assets\BasicBeamShot\sh\GeroBeam_sh.shader" />
+    <None Include="Assets\BasicBeamShot\sh\Sprite_Add_sh.shader" />
     <None Include="Assets\Credits.txt" />
+    <None Include="Assets\Glitch\GlitchShader.shader" />
     <None Include="Assets\GoogleVR\Distortion\GvrDistortion.cginc" />
     <None Include="Assets\GoogleVR\Resources\SolidColor.shader" />
     <None Include="Assets\GoogleVR\Resources\UI\GvrReticleShader.shader" />
     <None Include="Assets\GoogleVR\Resources\UnlitTexture.shader" />
+    <None Include="Assets\Kino\Glitch\Shader\AnalogGlitch.shader" />
+    <None Include="Assets\Kino\Glitch\Shader\DigitalGlitch.shader" />
+    <None Include="Assets\LightningBolt\Readme.txt" />
     <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
     <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlendModesOverlay.shader" />
@@ -192,6 +204,12 @@
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonBasicOutline.shader" />
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonLit.shader" />
     <None Include="Assets\Standard Assets\Effects\ToonShading\Shaders\ToonLitOutline.shader" />
+    <None Include="Assets\VolumetricLines\Shaders\VolumetricLineShaderAdditive.shader" />
+    <None Include="Assets\VolumetricLines\Shaders\VolumetricLineShaderAdditiveFast.shader" />
+    <None Include="Assets\VolumetricLines\Shaders\VolumetricLineShaderAlphaBlended.shader" />
+    <None Include="Assets\VolumetricLines\Shaders\VolumetricLineShaderAlphaBlendedFast.shader" />
+    <None Include="Assets\VolumetricLines\Shaders\VolumetricLineStripShaderAdditive.shader" />
+    <None Include="Assets\VolumetricLines\Shaders\VolumetricLineStripShaderAlphaBlended.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

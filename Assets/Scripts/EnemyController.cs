@@ -16,26 +16,26 @@ public class EnemyController : MonoBehaviour {
  
 
     public AudioSource beepAudioSource;
+    public float beepVolume = 0.8f;
 
-    private float _nextBeep;
+    private float nextBeep;
 
-    void OnAwake() {
+    void Awake() {
         if (rb = null) {
             rb = this.GetComponent<Rigidbody>();
         }
+        beepAudioSource.volume = beepVolume;
     }
 
     // Use this for initialization.
     void OnEnable () {
 		_state = EnemyState.Normal;
-        _nextBeep = Time.time + beepInterval;
+        nextBeep = Time.time + beepInterval;
 
         float thisSpeed = Random.Range (speedMin, speedMax);
-        if (GvrViewer.Instance.VRModeEnabled) {
-            thisSpeed *= 0.85f;
-        }
-
         
+        thisSpeed *= 0.85f;
+
         Vector3 dir = (-this.transform.position).normalized * thisSpeed;
         if (rb != null) {
             rb.velocity = dir;
@@ -52,9 +52,9 @@ public class EnemyController : MonoBehaviour {
     }
 
     void Update() {
-        if(Time.time > _nextBeep && _state == EnemyState.Normal) {
-            _nextBeep = Time.time + beepInterval;
-            beepAudioSource.Play();   
+        if(Time.time > nextBeep && _state == EnemyState.Normal) {
+            nextBeep = Time.time + beepInterval;
+            beepAudioSource.Play();
         }
     }
 	

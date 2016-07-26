@@ -5,14 +5,13 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour {
 
 	public bool isGameOver;
-	public Text scoreTxt;
     public Canvas VRGameOverCanvas;
     public Text VRGameOverTxt;
     public Canvas playButton;
     public EnemySpawner enemySpawner;
-    public CameraShaker cameraShaker;
     public GameObject playerCamera;
     public GameObject playerBody;
+    public PlayerHealth playerHealth;
 
     public AudioClip welcomeMusic;
     public float welcomeMusicVolume = 0.4f;
@@ -20,11 +19,14 @@ public class GameController : MonoBehaviour {
     public float combatMusicVolume = 0.6f;
 
     private AudioSource audioSource;
-    private int _currScore;
 	private bool _didIWin;
+    public bool hasSomethingOnFace;
+    private ScoreController scoreController;
 
 
     void Start() {
+
+        hasSomethingOnFace = false;
         VRGameOverCanvas.enabled = false;
         playButton.enabled = true;
         audioSource = this.GetComponent<AudioSource>();
@@ -32,6 +34,8 @@ public class GameController : MonoBehaviour {
         audioSource.volume = welcomeMusicVolume;
         audioSource.clip = welcomeMusic;
         audioSource.Play();
+
+        scoreController = GetComponentInChildren<ScoreController>();   
     }
 
     /// <summary>
@@ -42,20 +46,20 @@ public class GameController : MonoBehaviour {
         audioSource.Stop();
         audioSource.volume = combatMusicVolume;
         audioSource.clip = combatMusic;
+        audioSource.loop = true;
         audioSource.Play();
 
 		ResetGame();
-        enemySpawner.StartWaves();
+        
 	}
 	
 
 	/// <summary>
 	/// Got an enemy! Increment the score and see if we win.
 	/// </summary>
-	public void GotOne() {
-		_currScore++;
-        scoreTxt.text = "Score\n" + _currScore;
-
+	public void GotOne(int points) {
+        scoreController.AddPoints(points);
+        enemySpawner.EnemyKilled();
 	}
 	
 	/// <summary>
@@ -66,9 +70,7 @@ public class GameController : MonoBehaviour {
 		isGameOver = true;
         _didIWin = didIWin;
 
-        cameraShaker.ShakeCamera(0.7f, 1f);
-        Handheld.Vibrate();
-
+        enemySpawner.DeactivateAllEnemies();
         Invoke("spawnGameOverUI", 1.5f);
 
 	}
@@ -82,11 +84,12 @@ public class GameController : MonoBehaviour {
         // Reset the interface
         playerBody.transform.position = new Vector3(0, 1, 0);
         playerBody.transform.rotation = Quaternion.identity;
+        playerHealth.HealPlayer(playerHealth.startingHealth);
+        hasSomethingOnFace = false;
         VRGameOverCanvas.enabled = false;
         playButton.enabled = false;
 		isGameOver = false;
-		_currScore = 0;
-        scoreTxt.text = "Score\n " + _currScore;
+        scoreController.ResetScore();
 
         // Remove any remaining game objects
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -98,7 +101,10 @@ public class GameController : MonoBehaviour {
         foreach (GameObject ninjaStar in ninjaStars) {
         	Destroy (ninjaStar);
         }
-	}
+
+        //Start Waves
+        enemySpawner.StartWaves();
+    }
 
     Vector3 spawnUIInFrontOfCamera() {
 
@@ -121,7 +127,7 @@ public class GameController : MonoBehaviour {
         string finalTxt = "Game Over";
         VRGameOverCanvas.enabled = true;
         VRGameOverCanvas.transform.position = spawnUIInFrontOfCamera();
-        VRGameOverCanvas.transform.LookAt(new Vector3 (0f,1f,0f));
+        VRGameOverCanvas.transform.LookAt(new Vector3(0f, 1f, 0f));
         VRGameOverTxt.text = finalTxt;
     }
 
