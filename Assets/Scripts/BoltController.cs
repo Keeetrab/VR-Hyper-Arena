@@ -3,15 +3,6 @@ using System.Collections;
 
 public class BoltController : MonoBehaviour {
 
-	float boltSpeed = 9.0f;
-
-    public float force;
-    public float radius;
-    public float jumpFactor;
-
-    public GameObject shatteredSphere;
-    public GameObject hitEffect;
-    public GameObject deathEffect;
     private ObjectPoolScript objectPool;
 
     private GameController gameController;
@@ -33,13 +24,13 @@ public class BoltController : MonoBehaviour {
 
     void enemyHit(Collider collider) {
             EnemyHealth enemy =  collider.GetComponent<EnemyHealth>();
+            // If enemy has 1 health (would have 0 with this shot)
             if(enemy.GetCurrnetHP() <= 1) {
 
                 //Destroy the enemy
                 gameController.GotOne(enemy.scoreValue);
-                enemy.gameObject.SetActive(false);
+                enemy.EnemyDead();
             
-                
 
                 //Show floating score text
                 GameObject scoreCanvas = objectPool.GetScoreCanvas();
@@ -53,8 +44,10 @@ public class BoltController : MonoBehaviour {
                 //Show explosion
                 GameObject explosion = objectPool.GetPooledExplosion();
                 explosion.transform.position = collider.transform.position;
-                explosion.SetActive(true);                
-            } else {
+                explosion.SetActive(true);   
+                         
+            } else {    // Else deal damage and show hit effect
+
                 enemy.DealDamage(1);
 
                 GameObject hitEffect = objectPool.GetPooledHitEffect();
@@ -66,39 +59,5 @@ public class BoltController : MonoBehaviour {
     void OnDisable() {
         gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
         gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-    }
-
-
-    void Explode(Vector3 position) {
-        Collider[] colliders = Physics.OverlapSphere(position, radius);
-
-        foreach (Collider collider in colliders) {
-            if (collider.GetComponent<Rigidbody>() != null) {
-                if (collider.CompareTag("Enemy")) {
-                    GameObject brokenSphere = objectPool.GetPooledExplosion();
-                    //TODO ustawic transfomr tutaj a nie w activate
-                    DestroyedSphereController brokenSphereController = brokenSphere.GetComponent<DestroyedSphereController>();
-                    brokenSphereController.Activate(collider.transform.position, collider.transform.rotation);                
-                        
-                    if (collider.transform.CompareTag("Enemy")) {
-                        collider.gameObject.SetActive(false);                       
-                    } else {
-                        collider.transform.parent.transform.parent.gameObject.SetActive(false);
-                    }
-
-                    Rigidbody[] brokenPieces = brokenSphere.GetComponentsInChildren<Rigidbody>();
-                    foreach (Rigidbody piece in brokenPieces) {
-                        piece.AddExplosionForce(force, position, radius, jumpFactor, ForceMode.Impulse);             
-                    }
-
-                    brokenSphereController.Deactivate(5.0f);
-
-
-                } else {
-                    Rigidbody rb = collider.GetComponent<Rigidbody>();
-                    rb.AddExplosionForce(force, position, radius, jumpFactor, ForceMode.Impulse);
-                }
-            }
-        }
     }
 }

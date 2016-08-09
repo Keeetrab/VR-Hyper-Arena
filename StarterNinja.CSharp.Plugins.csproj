@@ -61,9 +61,6 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="Destruction">
-      <HintPath>Assets\Fracture - Box Destruction - Standard\Scripts\Destruction.dll</HintPath>
-    </Reference>
     <Reference Include="Google.ProtocolBuffers">
       <HintPath>Assets\Plugins\Google.ProtocolBuffers.dll</HintPath>
     </Reference>
@@ -110,22 +107,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AutoSave\ReadMe.txt" />
-    <None Include="Assets\BasicBeamShot\HowToUse_EN.txt" />
-    <None Include="Assets\BasicBeamShot\HowToUse_JP.txt" />
-    <None Include="Assets\BasicBeamShot\sh\AddColor_sh.shader" />
-    <None Include="Assets\BasicBeamShot\sh\Add_UVScroll_sh.shader" />
-    <None Include="Assets\BasicBeamShot\sh\BeamLine_sh.shader" />
-    <None Include="Assets\BasicBeamShot\sh\GeroBeam_sh.shader" />
-    <None Include="Assets\BasicBeamShot\sh\Sprite_Add_sh.shader" />
     <None Include="Assets\Credits.txt" />
-    <None Include="Assets\Glitch\GlitchShader.shader" />
     <None Include="Assets\GoogleVR\Distortion\GvrDistortion.cginc" />
     <None Include="Assets\GoogleVR\Resources\SolidColor.shader" />
     <None Include="Assets\GoogleVR\Resources\UI\GvrReticleShader.shader" />
     <None Include="Assets\GoogleVR\Resources\UnlitTexture.shader" />
     <None Include="Assets\Kino\Glitch\Shader\AnalogGlitch.shader" />
     <None Include="Assets\Kino\Glitch\Shader\DigitalGlitch.shader" />
-    <None Include="Assets\LightningBolt\Readme.txt" />
     <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
     <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlendModesOverlay.shader" />

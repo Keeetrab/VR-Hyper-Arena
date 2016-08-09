@@ -48,6 +48,7 @@ public class EnemySpiderController : MonoBehaviour {
 	
     void OnEnable() {
         //Reset stats
+        transform.SetParent(null);
         state = EnemyState.Moving;
         collidersHit = 0;
         knockBackTarget = Vector3.zero;
@@ -56,7 +57,7 @@ public class EnemySpiderController : MonoBehaviour {
 
     void OnDisable() {
         if(state == EnemyState.StickedToCamera) {
-            ResetFlagsAfterFall();
+            FallOff();
         }
 
         soundController.StopOnFaceSound();
@@ -135,8 +136,7 @@ public class EnemySpiderController : MonoBehaviour {
         soundController.PlayOnFaceSound();
     }
 
-    void FallOff() {
-        transform.SetParent(null);      
+    void FallOff() {    
         state = EnemyState.Fallen;
         ResetFlagsAfterFall();
         soundController.LowerFaceSoundVolume();

@@ -4,9 +4,11 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
-	public bool isGameOver;
     public Canvas VRGameOverCanvas;
     public Text VRGameOverTxt;
+    public GameObject tutorialCanvas;
+    public Button tutorialButton;
+    public bool isGameOver;
     public Canvas playButton;
     public EnemySpawner enemySpawner;
     public GameObject playerCamera;
@@ -17,18 +19,21 @@ public class GameController : MonoBehaviour {
     public float welcomeMusicVolume = 0.4f;
     public AudioClip combatMusic;
     public float combatMusicVolume = 0.6f;
+    public float combatMusciPitch = 1.2f;
 
     private AudioSource audioSource;
-	private bool _didIWin;
     public bool hasSomethingOnFace;
     private ScoreController scoreController;
+    
 
 
     void Start() {
 
+        isGameOver = false;
         hasSomethingOnFace = false;
         VRGameOverCanvas.enabled = false;
         playButton.enabled = true;
+        tutorialButton.enabled = true;
         audioSource = this.GetComponent<AudioSource>();
 
         audioSource.volume = welcomeMusicVolume;
@@ -38,14 +43,14 @@ public class GameController : MonoBehaviour {
         scoreController = GetComponentInChildren<ScoreController>();   
     }
 
-    /// <summary>
-    /// Start a new game.
-    /// </summary>
+    // New Game
+
     public void NewGame() {
         playButton.enabled = false;
         audioSource.Stop();
         audioSource.volume = combatMusicVolume;
         audioSource.clip = combatMusic;
+        audioSource.pitch = combatMusciPitch;
         audioSource.loop = true;
         audioSource.Play();
 
@@ -53,42 +58,32 @@ public class GameController : MonoBehaviour {
         
 	}
 	
-
-	/// <summary>
-	/// Got an enemy! Increment the score and see if we win.
-	/// </summary>
+    // Enemy killed, add points and increase amount of killed enemies in wave.
 	public void GotOne(int points) {
         scoreController.AddPoints(points);
         enemySpawner.EnemyKilled();
 	}
 	
-	/// <summary>
-	/// Game's over. 
-	/// </summary>
-	/// <param name="didIWin">Did the playeer win?</param>	
-	public void GameOver(bool didIWin) {
-		isGameOver = true;
-        _didIWin = didIWin;
 
-        enemySpawner.DeactivateAllEnemies();
-        Invoke("spawnGameOverUI", 1.5f);
+    // Game Over, spawn Game Over UI after camera effects
+
+	public void GameOver() {
+        isGameOver = true;
+        Invoke("SpawnGameOverUI", 1.5f);
+        enemySpawner.DeactivateAllEnemies();     
 
 	}
 	
 
-	/// <summary>
-	/// Resets the interface, removes remaining game objects. Basically gets us to a point
-	/// where we're ready to play again.
-	/// </summary>
+	// Reset everything and start game again
+
 	public void ResetGame() {
         // Reset the interface
         playerBody.transform.position = new Vector3(0, 1, 0);
         playerBody.transform.rotation = Quaternion.identity;
         playerHealth.HealPlayer(playerHealth.startingHealth);
         hasSomethingOnFace = false;
-        VRGameOverCanvas.enabled = false;
-        playButton.enabled = false;
-		isGameOver = false;
+        HideCanvases();
         scoreController.ResetScore();
 
         // Remove any remaining game objects
@@ -97,16 +92,19 @@ public class GameController : MonoBehaviour {
         	Destroy(enemy);
         }
         
-        GameObject[] ninjaStars = GameObject.FindGameObjectsWithTag("Bolt");
-        foreach (GameObject ninjaStar in ninjaStars) {
+        GameObject[] remainedBolts = GameObject.FindGameObjectsWithTag("Bolt");
+        foreach (GameObject ninjaStar in remainedBolts) {
         	Destroy (ninjaStar);
         }
 
-        //Start Waves
+        // Start Waves
+        isGameOver = false;
         enemySpawner.StartWaves();
     }
 
-    Vector3 spawnUIInFrontOfCamera() {
+
+
+    Vector3 SpawnUIInFrontOfCamera() {
 
         float spawnDistance = 4;
 
@@ -123,12 +121,24 @@ public class GameController : MonoBehaviour {
         return spawnPos;
     }
 
-    void spawnGameOverUI() {
+    void HideCanvases() {
+        VRGameOverCanvas.enabled = false;
+        tutorialCanvas.SetActive(false);
+        playButton.enabled = false;
+        tutorialButton.gameObject.SetActive(false);
+    }
+
+    void SpawnGameOverUI() {
         string finalTxt = "Game Over";
         VRGameOverCanvas.enabled = true;
-        VRGameOverCanvas.transform.position = spawnUIInFrontOfCamera();
+        VRGameOverCanvas.transform.position = SpawnUIInFrontOfCamera();
         VRGameOverCanvas.transform.LookAt(new Vector3(0f, 1f, 0f));
         VRGameOverTxt.text = finalTxt;
+    }
+
+    public void ShowTutorial() {
+        tutorialButton.gameObject.SetActive(false);
+        tutorialCanvas.SetActive(true);
     }
 
 }

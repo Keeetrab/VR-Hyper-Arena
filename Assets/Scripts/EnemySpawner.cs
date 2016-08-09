@@ -25,9 +25,9 @@ public class EnemySpawner : MonoBehaviour {
     public int HealthHealedPerWave;
     public PlayerHealth playerHealth;
 
-    private int enemiesKilled;
-    private int startEnemiesInWave;
-    private float startSpawnRate;
+    public int enemiesKilled;
+    public int startEnemiesInWave;
+    public float startSpawnRate;
 
 	private float _nextLaunchTime;
 
@@ -59,7 +59,8 @@ public class EnemySpawner : MonoBehaviour {
 
         yield return new WaitForSeconds(timeBetweenWaves);
 
-        for (int i = 0; i < enemiesInWave; i++) {              
+        for (int i = 0; i < enemiesInWave; i++) {
+           
             SpawnEnemy();
             yield return new WaitForSeconds(spawnRate);
             if (gameController.isGameOver) {
@@ -81,7 +82,6 @@ public class EnemySpawner : MonoBehaviour {
 
     void SpawnEnemy() {
         Vector3 launchPosition = RandomCirclePosition(spawnRadius);
-        Quaternion launchRotation = Quaternion.Euler(Vector3.zero);
         GameObject enemy = GetRandomEnemy();
 
         enemy.transform.position = launchPosition;
@@ -101,7 +101,7 @@ public class EnemySpawner : MonoBehaviour {
 
     public void EnemyKilled() {
         enemiesKilled += 1;
-        if(enemiesKilled == enemiesInWave && !gameController.isGameOver) {
+        if(enemiesKilled >= enemiesInWave) {
             WaveFinished();
             StartCoroutine(NextWave());
         }

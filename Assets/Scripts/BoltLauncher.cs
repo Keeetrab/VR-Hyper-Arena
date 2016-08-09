@@ -24,14 +24,14 @@ public class BoltLauncher : MonoBehaviour {
     }
 	
 	void Update () {
-        if (GvrViewer.Instance.VRModeEnabled && GvrViewer.Instance.Triggered && !gameController.isGameOver && canShot) {
+        if (GvrViewer.Instance.VRModeEnabled && GvrViewer.Instance.Triggered && canShot) {
             GameObject vrLauncher =
                  GvrViewer.Instance.GetComponentInChildren<GvrHead>().gameObject;
            
             LaunchFrom(vrLauncher);
 
         } else if (!GvrViewer.Instance.VRModeEnabled && Input.GetButtonDown("Fire1") &&
-           !gameController.isGameOver && canShot) {
+            canShot) {
 			Vector3 mouseLoc = Input.mousePosition;
 			Vector3 worldMouseLoc = Camera.main.ScreenToWorldPoint(mouseLoc);
 			worldMouseLoc.y = player.transform.position.y;
