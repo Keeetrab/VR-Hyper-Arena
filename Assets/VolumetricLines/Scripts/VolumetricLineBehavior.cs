@@ -201,7 +201,7 @@ namespace VolumetricLines
 		}
 		
 		// Vertex data is updated only in Start() unless m_dynamic is set to true
-		void Start () 
+		void Awake () 
 		{
 			Vector3[] vertexPositions = {
 				m_startPos,
