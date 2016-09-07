@@ -4,11 +4,16 @@ using System.Collections;
 public class HitController : MonoBehaviour {
     public float selfDisableTime;
     private AudioSource audioSource;
+    private ParticleSystem particles;
     public float pitchMinRange;
     public float pitchMaxRange;
 
+
+
+
     void Awake() {
         audioSource = GetComponent<AudioSource>();
+
     }
 
     void OnEnable() {
